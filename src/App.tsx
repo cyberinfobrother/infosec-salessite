@@ -13,11 +13,13 @@ import { CostCalculator } from './components/CostCalculator';
 import { CallToAction } from './components/CallToAction';
 import { Footer } from './components/Footer';
 import { QuoteModal } from './components/QuoteModal';
+import { FooterPages } from './components/FooterPages';
 import { AnimatePresence, motion } from 'motion/react';
 
 export default function App() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [activeServicePageId, setActiveServicePageId] = useState<string | null>(null);
+  const [activeFooterPage, setActiveFooterPage] = useState<'privacy' | 'terms' | 'locations' | 'sitemap' | null>(null);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [originSectionId, setOriginSectionId] = useState<string | null>(null);
 
@@ -33,14 +35,24 @@ export default function App() {
     setPrevScrollPos(window.scrollY);
     setOriginSectionId(origin || null);
     setActiveServicePageId(serviceId);
+    setActiveFooterPage(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleGoHome = () => {
+  const handleSelectFooterPage = (page: 'privacy' | 'terms' | 'locations' | 'sitemap') => {
+    setPrevScrollPos(window.scrollY);
     setActiveServicePageId(null);
+    setActiveFooterPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGoHome = (targetSectionId?: string) => {
+    setActiveServicePageId(null);
+    setActiveFooterPage(null);
     setTimeout(() => {
-      if (originSectionId) {
-        const element = document.getElementById(originSectionId);
+      const activeSectionId = targetSectionId ? targetSectionId.replace('#', '') : originSectionId;
+      if (activeSectionId) {
+        const element = document.getElementById(activeSectionId);
         if (element) {
           const headerOffset = 80;
           const elementPosition = element.getBoundingClientRect().top;
@@ -65,12 +77,30 @@ export default function App() {
       <Header 
         onOpenQuoteModal={handleOpenQuoteModal} 
         onGoHome={handleGoHome}
-        isServicePageActive={activeServicePageId !== null}
+        isServicePageActive={activeServicePageId !== null || activeFooterPage !== null}
       />
 
       {/* Main Sections */}
       <AnimatePresence mode="wait">
-        {activeServicePageId ? (
+        {activeFooterPage ? (
+          <motion.main
+            key="footer-pages-view"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+          >
+            <FooterPages 
+              activeTab={activeFooterPage}
+              onTabChange={setActiveFooterPage}
+              onClose={handleGoHome}
+              onSelectServicePage={(serviceId) => {
+                setActiveFooterPage(null);
+                handleSelectServicePage(serviceId);
+              }}
+            />
+          </motion.main>
+        ) : activeServicePageId ? (
           <motion.main
             key="service-detail-view"
             initial={{ opacity: 0, y: 15 }}
@@ -126,7 +156,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Footer */}
-      <Footer />
+      <Footer onSelectFooterPage={handleSelectFooterPage} />
 
       {/* Embedded Quote / Consultation Request Modal Overlay */}
       <AnimatePresence>

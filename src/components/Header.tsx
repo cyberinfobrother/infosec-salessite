@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface HeaderProps {
   onOpenQuoteModal?: () => void;
-  onGoHome?: () => void;
+  onGoHome?: (targetSectionId?: string) => void;
   isServicePageActive?: boolean;
 }
 
@@ -39,12 +39,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onGoHome, isSe
     e.preventDefault();
     setMobileMenuOpen(false);
 
-    if (onGoHome) {
-      onGoHome();
-    }
-
-    setTimeout(() => {
-      const element = document.querySelector(href);
+    if (isServicePageActive) {
+      if (onGoHome) {
+        onGoHome(href);
+      }
+    } else {
+      const cleanId = href.replace('#', '');
+      const element = document.getElementById(cleanId);
       if (element) {
         const headerOffset = 80;
         const elementPosition = element.getBoundingClientRect().top;
@@ -54,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onGoHome, isSe
           behavior: 'smooth'
         });
       }
-    }, isServicePageActive ? 100 : 0);
+    }
   };
 
   return (

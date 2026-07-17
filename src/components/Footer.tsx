@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Globe, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onSelectFooterPage?: (page: 'privacy' | 'terms' | 'locations' | 'sitemap') => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onSelectFooterPage }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -57,10 +61,38 @@ export const Footer: React.FC = () => {
             Quick Links
           </h4>
           <ul className="space-y-2 text-xs text-gray-400 font-sans">
-            <li><a href="#" className="hover:text-primary-orange transition-colors">Privacy Policy</a></li>
-            <li><a href="#" className="hover:text-primary-orange transition-colors">Terms of Service</a></li>
-            <li><a href="#" className="hover:text-primary-orange transition-colors">Global Locations</a></li>
-            <li><a href="#" className="hover:text-primary-orange transition-colors">Sitemap</a></li>
+            <li>
+              <button 
+                onClick={(e) => { e.preventDefault(); onSelectFooterPage?.('privacy'); }}
+                className="hover:text-primary-orange transition-colors cursor-pointer text-left focus:outline-none"
+              >
+                Privacy Policy
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={(e) => { e.preventDefault(); onSelectFooterPage?.('terms'); }}
+                className="hover:text-primary-orange transition-colors cursor-pointer text-left focus:outline-none"
+              >
+                Terms of Service
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={(e) => { e.preventDefault(); onSelectFooterPage?.('locations'); }}
+                className="hover:text-primary-orange transition-colors cursor-pointer text-left focus:outline-none"
+              >
+                Global Locations
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={(e) => { e.preventDefault(); onSelectFooterPage?.('sitemap'); }}
+                className="hover:text-primary-orange transition-colors cursor-pointer text-left focus:outline-none"
+              >
+                Sitemap
+              </button>
+            </li>
           </ul>
         </div>
 
