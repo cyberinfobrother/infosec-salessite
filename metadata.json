@@ -1,0 +1,8 @@
+{
+  "name": "Remix: InfoBro Business Solutions",
+  "description": "High-trust premium enterprise technology solutions including cybersecurity, cloud services, and managed IT infrastructure.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
